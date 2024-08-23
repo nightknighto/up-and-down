@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>drive clone login</title>
+    <link rel="stylesheet" href="/styles-login.css">
+</head>
+<body>
+    <form id="loginForm">
+        <div class="image">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512z"/></svg>
+        </div>
+            <div class="form">
+            <p class="sign-in">Sign in</p>
+            <div class="mail">
+                <p>Email</p>
+                <input type="text" id="email" required>
+            </div>
+            <div>
+                <p>Password</p>
+                <input type="password" id="password" required>
+            </div class="password">
+            <button class="log-in" type="submit">Log in</button>
+            <p class="forgot">Forget your password?</p>
+        </div>
+        <p class="new">New to drive clone?</p>
+        <button class="register">Create an account</button>
+        <p id="loginMessage"></p>
+    </form>
+    
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+
+        try {
+            const response = await fetch('/auth/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ email, password })
+            });
+            const result = await response.json();
+            if (response.ok) {
+            token = result.token;
+            document.getElementById('loginMessage').textContent = 'Login successful';
+            updateUserStatus();
+            console.log(result.firstName)
+            } else {
+            document.getElementById('loginMessage').textContent = result.message;
+            }
+        } catch (error) {
+            document.getElementById('loginMessage').textContent = 'Error logging in';
+        }
+        });
+    </script>
+</body>
+</html>
