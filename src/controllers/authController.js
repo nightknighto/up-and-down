@@ -8,12 +8,14 @@ class AuthController {
   // Handle user registration
   async register(req, res) {
     try {
-      const { email, password } = req.body;
+      const { email, password, firstName, lastName } = req.body;
       const hashedPassword = await bcrypt.hash(password, 10);
 
       const user = await UserModel.create({
         email,
-        password: hashedPassword
+        password: hashedPassword,
+        firstName,
+        lastName
       });
 
       const token = jwt.sign({ id: user.id }, config.jwtSecret, {
@@ -53,6 +55,8 @@ class AuthController {
       res.status(200).send({
         message: 'User logged in successfully',
         userId: user.id,
+        firstName: user.firstName,
+        lastName: user.lastName,
         token
       });
     } catch (error) {

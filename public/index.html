@@ -14,6 +14,8 @@
   <!-- Registration Form -->
   <h2>Register</h2>
   <form id="registerForm">
+	<input type="text" id="registerFirstName" placeholder="First Name" required>
+	<input type="text" id="registerLastName" placeholder="Last Name" required>
 	<input type="text" id="registerEmail" placeholder="Email" required>
 	<input type="password" id="registerPassword" placeholder="Password" required>
 	<button type="submit">Register</button>
@@ -67,8 +69,11 @@
       }
     }
 
+	// Register Form
 	document.getElementById('registerForm').addEventListener('submit', async (event) => {
       event.preventDefault();
+      const firstName = document.getElementById('registerFirstName').value;
+      const lastName = document.getElementById('registerLastName').value;
       const email = document.getElementById('registerEmail').value;
       const password = document.getElementById('registerPassword').value;
       try {
@@ -77,12 +82,11 @@
           headers: {
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify({ email, password })
+          body: JSON.stringify({ email, password, firstName, lastName })
         });
         const result = await response.json();
         if (response.ok) {
           document.getElementById('registerMessage').textContent = 'Registration successful';
-		  
 		} else {
           document.getElementById('registerMessage').textContent = result.message;
         }
@@ -91,6 +95,7 @@
       }
     });
 
+	// Login Form
 	document.getElementById('loginForm').addEventListener('submit', async (event) => {
 	  event.preventDefault();
 	  const email = document.getElementById('email').value;
@@ -109,6 +114,7 @@
 		  token = result.token;
 		  document.getElementById('loginMessage').textContent = 'Login successful';
 		  updateUserStatus();
+		  console.log(result.firstName)
 		} else {
 		  document.getElementById('loginMessage').textContent = result.message;
 		}
