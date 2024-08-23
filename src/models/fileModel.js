@@ -13,6 +13,10 @@ module.exports = (sequelize, DataTypes) => {
     fileName: {
       type: DataTypes.STRING,
       allowNull: false
+    },
+    filePath: {
+      type: DataTypes.STRING,
+      allowNull: false
     }
   });
 

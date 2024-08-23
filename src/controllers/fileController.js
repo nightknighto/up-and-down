@@ -1,7 +1,7 @@
 const { Storage } = require('@google-cloud/storage');
 const path = require('path');
 const config = require('../../config/config'); // Ensure you have your Google Cloud credentials configured
-const { File } = require('../models'); // Import the File model
+const {FileModel} = require('../models'); // Import the File model
 
 const storage = new Storage({
   projectId: config.googleCloudStorage.projectId,
@@ -19,7 +19,9 @@ class FileController {
         return res.status(400).send('No file uploaded.');
       }
 
-      const blob = bucket.file(req.file.originalname);
+      const filePath = crypto.randomUUID() + path.extname(req.file.originalname)
+
+      const blob = bucket.file(filePath);
       const blobStream = blob.createWriteStream({
         resumable: false
       });
@@ -31,9 +33,10 @@ class FileController {
 
       blobStream.on('finish', async () => {
         const publicUrl = `https://storage.googleapis.com/${bucket.name}/${blob.name}`;
-        await File.create({
+        await FileModel.create({
           userId: req.userId, // Assuming userId is set by auth middleware
-          fileName: req.file.originalname
+          fileName: req.file.originalname,
+          filePath: filePath
         });
         res.status(200).send({ message: 'File uploaded successfully', url: publicUrl });
       });
@@ -48,14 +51,14 @@ class FileController {
   // Handle file download
   async downloadFile(req, res) {
     try {
-      const fileName = req.params.fileName;
-      const fileRecord = await File.findOne({ where: { fileName, userId: req.userId } });
+      const filePath = req.params.filePath;
+      const fileRecord = await FileModel.findOne({ where: { filePath, userId: req.userId } });
 
       if (!fileRecord) {
         return res.status(404).send('File not found or you do not have access.');
       }
 
-      const file = bucket.file(fileName);
+      const file = bucket.file(filePath);
 
       const exists = await file.exists();
       if (!exists[0]) {
@@ -77,14 +80,14 @@ class FileController {
   // Handle file deletion
   async deleteFile(req, res) {
     try {
-      const fileName = req.params.fileName;
-      const fileRecord = await File.findOne({ where: { fileName, userId: req.userId } });
+      const filePath = req.params.filePath;
+      const fileRecord = await FileModel.findOne({ where: { filePath, userId: req.userId } });
 
       if (!fileRecord) {
         return res.status(404).send('File not found or you do not have access.');
       }
 
-      const file = bucket.file(fileName);
+      const file = bucket.file(filePath);
 
       const exists = await file.exists();
       if (!exists[0]) {

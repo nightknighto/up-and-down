@@ -49,6 +49,11 @@
   <button id="deleteButton">Delete</button>
   <p id="deleteMessage"></p>
 
+  <!-- User Info Form -->
+  <h2>User Info</h2>
+  <button id="getUserInfoButton">Get User Info</button>
+  <div id="userInfo"></div>
+
   <script>
 	let token = '';
 
@@ -174,6 +179,27 @@
 		document.getElementById('deleteMessage').textContent = 'Error deleting file';
 	  }
 	});
+
+	// Get user info
+    document.getElementById('getUserInfoButton').addEventListener('click', async () => {
+      try {
+        const response = await fetch('/users', {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        const result = await response.json();
+        if (response.ok) {
+          const userInfoDiv = document.getElementById('userInfo');
+          userInfoDiv.innerHTML = `<pre>${JSON.stringify(result, null, 2)}</pre>`;
+        } else {
+          document.getElementById('userInfo').textContent = result.message;
+        }
+      } catch (error) {
+        document.getElementById('userInfo').textContent = 'Error fetching user info';
+      }
+    });
   </script>
 </body>
 </html>

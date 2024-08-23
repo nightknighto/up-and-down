@@ -8,8 +8,10 @@ const sequelize = new Sequelize(config.database.database, config.database.userna
 });
 
 const UserModel = require('./userModel')(sequelize, Sequelize);
+const FileModel = require('./fileModel')(sequelize, Sequelize)
 
 module.exports = {
   sequelize,
-  UserModel
+  UserModel,
+  FileModel,
 };

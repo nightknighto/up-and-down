@@ -7,7 +7,7 @@ const authMiddleware = require('../middlewares/authMiddleware');
 const fileController = new FileController();
 
 router.post('/upload', authMiddleware, upload.single('file'), (req, res) => fileController.uploadFile(req, res));
-router.get('/download/:fileName', authMiddleware, (req, res) => fileController.downloadFile(req, res));
-router.delete('/delete/:fileName', authMiddleware, (req, res) => fileController.deleteFile(req, res));
+router.get('/download/:filePath', authMiddleware, (req, res) => fileController.downloadFile(req, res));
+router.delete('/delete/:filePath', authMiddleware, (req, res) => fileController.deleteFile(req, res));
 
 module.exports = router;

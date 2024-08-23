@@ -1,6 +1,5 @@
 // controllers/userController.js
-const { UserModel } = require('../models');
-const { File } = require('../models/fileModel');
+const { UserModel, FileModel } = require('../models');
 
 class UserController {
   // Method to get the logged-in user's files
@@ -9,7 +8,7 @@ class UserController {
       const userId = req.userId; // Assuming user ID is stored in req.user by authMiddleware
 
       // Query the File model to get all files for the user
-      const files = await File.findAll({
+      const files = await FileModel.findAll({
         where: { userId: userId }
       });
 
