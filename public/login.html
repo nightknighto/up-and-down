@@ -46,12 +46,16 @@
             });
             const result = await response.json();
             if (response.ok) {
-            token = result.token;
-            document.getElementById('loginMessage').textContent = 'Login successful';
-            updateUserStatus();
-            console.log(result.firstName)
+                token = result.token;
+                document.getElementById('loginMessage').textContent = 'Login successful';
+                sessionStorage.setItem('token', token);
+                sessionStorage.setItem('email', email);
+                sessionStorage.setItem('firstName', result.firstName);
+                sessionStorage.setItem('lastName', result.lastName);
+                
+                window.location = '/user.html';
             } else {
-            document.getElementById('loginMessage').textContent = result.message;
+                document.getElementById('loginMessage').textContent = result.message;
             }
         } catch (error) {
             document.getElementById('loginMessage').textContent = 'Error logging in';
