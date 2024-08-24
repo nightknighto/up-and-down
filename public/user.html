@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Page</title>
+  <link rel="stylesheet" href="styles-user.css">
+</head>
+<body>
+  <div class="form">
+    <h1 class="sign-in">User Information</h1>
+    <div class="user-info">
+      <p><strong>First Name:</strong> <span id="firstName"></span></p>
+      <p><strong>Last Name:</strong> <span id="lastName"></span></p>
+      <p><strong>Email:</strong> <span id="email"></span></p>
+    </div>
+    <h2 class="sign-in">User Files</h2>
+    <ul id="fileList"></ul>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+        const token = sessionStorage.getItem('token');
+        if (!token) {
+          window.location = '/login.html';
+        }
+      try {
+        const response = await fetch('/users', {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        const result = await response.json();
+        if (response.ok) {
+          document.getElementById('firstName').textContent = sessionStorage.getItem('firstName');
+          document.getElementById('lastName').textContent = sessionStorage.getItem('lastName');
+          document.getElementById('email').textContent = sessionStorage.getItem('email');
+
+          const fileList = document.getElementById('fileList');
+          result.files.forEach(file => {
+            const li = document.createElement('li');
+            li.textContent = file.name;
+            fileList.appendChild(li);
+          });
+        } else {
+          console.error(result.message);
+        }
+      } catch (error) {
+        console.error('Error fetching user info:', error);
+      }
+    });
+  </script>
+</body>
+</html>
