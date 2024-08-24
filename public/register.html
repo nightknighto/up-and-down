@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>drive clone register</title>
+    <link rel="stylesheet" href="/styles-register.css">
+</head>
+<body>
+    <form id="registerForm" class="hero">
+        <div>
+            <div class="form">
+                <div class="image">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512z"/></svg>
+                </div>
+                <p class="create">Create an account</p>
+
+                <div class="name">
+                    <div>
+                        <p>First name</p>
+                        <input class="double-text" type="text" id="registerFirstName" id="registerFirstName" required>    
+                    </div>
+                    
+                    <div>
+                        <p>Last name</p>
+                        <input class="double-text" type="text" id="registerLastName" id="registerLastName" required>
+                    </div>
+                    
+                </div>
+
+                <div class="mail">
+                    <p>Email</p>
+                    <input type="text" id="registerEmail" required>
+                </div>
+
+                <div class="password">
+                    <div>
+                        <p>password</p>
+                        <input class="double-text" type="password" id="registerPassword" id="registerPassword" required>
+                    </div>
+
+                    <div>
+                        <p>confirm password</p>
+                        <input class="double-text" type="password" id="registerConfirmPassword" id="registerPassword" required>
+                    </div>
+                    
+                </div>
+
+                <p>Use 8 or more characters with a mix of letters, numbers & symbols</p>
+
+                <div class="create">
+                    <p class="instead">log in instead</p>
+
+                    <button type="submit" class="register">Create an account</button>
+                </div>
+            </div>
+
+        </div>
+        <p id="registerMessage"></p>
+    </form>
+    
+
+    <script>
+        document.getElementById('registerForm').addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const firstName = document.getElementById('registerFirstName').value;
+        const lastName = document.getElementById('registerLastName').value;
+        const email = document.getElementById('registerEmail').value;
+        const password = document.getElementById('registerPassword').value;
+
+        try {
+            const response = await fetch('/auth/register', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ email, password , firstName, lastName })
+            });
+            const result = await response.json();
+            if (response.ok) {
+            document.getElementById('registerMessage').textContent = 'Registration successful';
+            } else {
+            document.getElementById('registerMessage').textContent = result.message;
+            }
+        } catch (error) {
+            document.getElementById('registerMessage').textContent = 'Error registering';
+        }
+        });
+    </script>
+</body>
+</html>

@@ -6,6 +6,29 @@ body {
     font-family: Arial, sans-serif;
 }
 
+.create {
+    margin-top: 10px;
+    margin-bottom: 8px;
+    color: black;
+    font-size: 30px;
+    display: flex;
+    justify-content: space-between;    
+}
+
+.instead {
+    color: black;
+    margin-top: 35px;
+    text-decoration-line: underline;
+}
+
+.instead:hover{
+    color: gray;
+}
+
+.hero {
+    margin-top: 80px;
+}
+
 .form {
     border-width: 1px;
     border-style: groove;
@@ -18,24 +41,26 @@ body {
 }
 
 svg{
-    margin-top: 40px;
+    margin-top: 20px;
     margin-bottom: 20px;
-    width: 60px;
-    height: 60px;
+    width: 50px;
+    height: 50px;
     align-self: center;
 }
 
-.image {
+.name {
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
 }
 
 .mail {
-    margin-top: 20px;
+    margin-top: 10px;
 }
 
 .password {
-    margin-top: 20px;
+    margin-top: 10px;
+    display: flex;
+    justify-content: space-between;
 }
 
 p {
@@ -51,8 +76,6 @@ p {
     margin-top: 20px;
 }
 
-
-
 .forgot {
     color: black;
     text-decoration-line: underline;
@@ -66,9 +89,13 @@ p {
     color: gray;
 }
 
+.double-text {
+    width: 200px;
+}
+
 input {
     border-radius: 10px;
-    width: 400px;
+    width: 412px;
     height: 40px;
     align-content: center;
     font-size: large;
@@ -90,8 +117,8 @@ button{
     font-size: 18px;
 }
 
-.log-in {
-    width: 408px;
+.register {
+    width: 200px;
     height: 50px;
     border-radius: 30px;
     margin-top: 20px;
@@ -108,13 +135,6 @@ button{
     margin-top: 30px;
     margin-bottom: 30px;
     text-align: center;
-}
-
-.register {
-    width: 492px;
-    height: 50px;
-    border-radius: 30px;
-    background-color: white;
 }
 
 .register:hover{
