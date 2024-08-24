@@ -17,9 +17,16 @@
     <h2 class="sign-in">User Files</h2>
     <div id="fileCards" class="file-cards"></div>
     <h2 class="sign-in">Upload File</h2>
-    <form id="uploadForm">
-      <input type="file" id="fileInput" name="file" required>
-      <button type="submit">Upload</button>
+    <form id="uploadForm" class="upload-form">
+      <div class="upload-file">
+        <input type="file" id="fileInput" name="file" class="choose-file" required>
+        <div class="upload-div">
+          <button type="submit" class="upload-button"></button>
+          <p>Upload file</p>
+        </div>
+      </div>
+      
+      
     </form>
     <p id="uploadMessage"></p>
   </div>
@@ -47,10 +54,13 @@
             const card = document.createElement('div');
             card.className = 'file-card';
             card.innerHTML = `
-              <img src="image.png" alt="File Image" class="file-image">
-              <p class="file-name">${file.fileName}</p>
-              <button class="download-button" data-file-path="${file.filePath}">Download</button>
-              <button class="delete-button" data-file-path="${file.filePath}">Delete</button>
+              <div class="user-file">
+                <p class="file-name">${file.fileName}</p>
+                <div class="buttons">
+                  <button class="download-button" data-file-path="${file.filePath}"></button>
+                  <button class="delete-button" data-file-path="${file.filePath}"></button>
+                </div>
+              </div>
             `;
             fileCards.appendChild(card);
           });
@@ -139,10 +149,13 @@
             const card = document.createElement('div');
             card.className = 'file-card';
             card.innerHTML = `
-              <img src="image.png" alt="File Image" class="file-image">
-              <p class="file-name">${file.name}</p>
-              <button class="download-button" data-file-path="${result.filePath}">Download</button>
-              <button class="delete-button" data-file-path="${result.filePath}">Delete</button>
+              <div class="user-file">
+                <p class="file-name">${file.fileName}</p>
+                <div class="buttons">
+                  <button class="download-button" data-file-path="${file.filePath}"></button>
+                  <button class="delete-button" data-file-path="${file.filePath}"></button>
+                </div>
+              </div>
             `;
             document.getElementById('fileCards').appendChild(card);
           } else {
