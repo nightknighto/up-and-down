@@ -15,7 +15,7 @@
       <p><strong>Email:</strong> <span id="email"></span></p>
     </div>
     <h2 class="sign-in">User Files</h2>
-    <ul id="fileList"></ul>
+    <div id="fileCards" class="file-cards"></div>
     <h2 class="sign-in">Upload File</h2>
     <form id="uploadForm">
       <input type="file" id="fileInput" name="file" required>
@@ -42,11 +42,69 @@
           document.getElementById('firstName').textContent = sessionStorage.getItem('firstName');
           document.getElementById('lastName').textContent = sessionStorage.getItem('lastName');
           document.getElementById('email').textContent = sessionStorage.getItem('email');
-          const fileList = document.getElementById('fileList');
+          const fileCards = document.getElementById('fileCards');
           result.files.forEach(file => {
-            const li = document.createElement('li');
-            li.textContent = file.fileName;
-            fileList.appendChild(li);
+            const card = document.createElement('div');
+            card.className = 'file-card';
+            card.innerHTML = `
+              <img src="image.png" alt="File Image" class="file-image">
+              <p class="file-name">${file.fileName}</p>
+              <button class="download-button" data-file-path="${file.filePath}">Download</button>
+              <button class="delete-button" data-file-path="${file.filePath}">Delete</button>
+            `;
+            fileCards.appendChild(card);
+          });
+
+          document.querySelectorAll('.download-button').forEach(button => {
+            button.addEventListener('click', async (event) => {
+              const filePath = event.target.getAttribute('data-file-path');
+              try {
+                const response = await fetch(`/files/download/${filePath}`, {
+                  method: 'GET',
+                  headers: {
+                    'Authorization': `Bearer ${token}`
+                  }
+                });
+                if (response.ok) {
+                  const blob = await response.blob();
+                  const url = window.URL.createObjectURL(blob);
+                  const a = document.createElement('a');
+                  a.style.display = 'none';
+                  a.href = url;
+                  a.download = filePath;
+                  document.body.appendChild(a);
+                  a.click();
+                  window.URL.revokeObjectURL(url);
+                } else {
+                  console.error('Download failed:', response.statusText);
+                }
+              } catch (error) {
+                console.error('Error downloading file:', error);
+              }
+            });
+          });
+
+          document.querySelectorAll('.delete-button').forEach(button => {
+            button.addEventListener('click', async (event) => {
+              const filePath = event.target.getAttribute('data-file-path');
+              try {
+                const response = await fetch(`/files/delete/${filePath}`, {
+                  method: 'DELETE',
+                  headers: {
+                    'Authorization': `Bearer ${token}`
+                  }
+                });
+                const result = await response.json();
+                if (response.ok) {
+                  event.target.closest('.file-card').remove();
+                  console.log('File deleted successfully:', result.message);
+                } else {
+                  console.error('Delete failed:', result.message);
+                }
+              } catch (error) {
+                console.error('Error deleting file:', error);
+              }
+            });
           });
         } else {
           console.error(result.message);
@@ -78,9 +136,15 @@
           const result = await response.json();
           if (response.ok) {
             document.getElementById('uploadMessage').textContent = 'File uploaded successfully.';
-            const li = document.createElement('li');
-            li.textContent = file.name;
-            document.getElementById('fileList').appendChild(li);
+            const card = document.createElement('div');
+            card.className = 'file-card';
+            card.innerHTML = `
+              <img src="image.png" alt="File Image" class="file-image">
+              <p class="file-name">${file.name}</p>
+              <button class="download-button" data-file-path="${result.filePath}">Download</button>
+              <button class="delete-button" data-file-path="${result.filePath}">Delete</button>
+            `;
+            document.getElementById('fileCards').appendChild(card);
           } else {
             document.getElementById('uploadMessage').textContent = `Upload failed: ${result.message}`;
           }
