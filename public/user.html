@@ -57,7 +57,7 @@
               <div class="user-file">
                 <p class="file-name">${file.fileName}</p>
                 <div class="buttons">
-                  <button class="download-button" data-file-path="${file.filePath}"></button>
+                  <button class="download-button" data-file-path="${file.filePath}" data-file-name="${file.fileName}"></button>
                   <button class="delete-button" data-file-path="${file.filePath}"></button>
                 </div>
               </div>
@@ -68,6 +68,7 @@
           document.querySelectorAll('.download-button').forEach(button => {
             button.addEventListener('click', async (event) => {
               const filePath = event.target.getAttribute('data-file-path');
+              const fileName = event.target.getAttribute('data-file-name');
               try {
                 const response = await fetch(`/files/download/${filePath}`, {
                   method: 'GET',
@@ -81,7 +82,7 @@
                   const a = document.createElement('a');
                   a.style.display = 'none';
                   a.href = url;
-                  a.download = filePath;
+                  a.download = fileName;
                   document.body.appendChild(a);
                   a.click();
                   window.URL.revokeObjectURL(url);
@@ -146,18 +147,20 @@
           const result = await response.json();
           if (response.ok) {
             document.getElementById('uploadMessage').textContent = 'File uploaded successfully.';
-            const card = document.createElement('div');
-            card.className = 'file-card';
-            card.innerHTML = `
-              <div class="user-file">
-                <p class="file-name">${file.fileName}</p>
-                <div class="buttons">
-                  <button class="download-button" data-file-path="${file.filePath}"></button>
-                  <button class="delete-button" data-file-path="${file.filePath}"></button>
-                </div>
-              </div>
-            `;
-            document.getElementById('fileCards').appendChild(card);
+            // const card = document.createElement('div');
+            // const filePath = result.url.split('/').pop();
+            // card.className = 'file-card';
+            // card.innerHTML = `
+            //   <div class="user-file">
+            //     <p class="file-name">${file.name}</p>
+            //     <div class="buttons">
+            //       <button class="download-button" data-file-path="${filePath}"></button>
+            //       <button class="delete-button" data-file-path="${filePath}"></button>
+            //     </div>
+            //   </div>
+            // `;
+            window.location.reload();
+            // document.getElementById('fileCards').appendChild(card);
           } else {
             document.getElementById('uploadMessage').textContent = `Upload failed: ${result.message}`;
           }

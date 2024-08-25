@@ -49,7 +49,7 @@
                 <p>Use 8 or more characters with a mix of letters, numbers & symbols</p>
 
                 <div class="create">
-                    <a href="/login.html"><p class="instead">log in instead</p></a>
+                    <a href="/"><p class="instead">log in instead</p></a>
 
                     <button type="submit" class="register">Create an account</button>
                 </div>
@@ -79,6 +79,7 @@
             const result = await response.json();
             if (response.ok) {
             document.getElementById('registerMessage').textContent = 'Registration successful';
+            window.location = '/';
             } else {
             document.getElementById('registerMessage').textContent = result.message;
             }

@@ -1,211 +1,66 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>File Management</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>drive clone login</title>
+    <link rel="stylesheet" href="/styles-login.css">
 </head>
 <body>
-  <h1>File Management</h1>
+    <form id="loginForm">
+        <div class="image">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512z"/></svg>
+        </div>
+        <div class="form">
+            <p class="sign-in">Sign in</p>
+            <div class="mail">
+                <p>Email</p>
+                <input type="text" id="email" required>
+            </div>
+            <div>
+                <p>Password</p>
+                <input type="password" id="password" required>
+            </div class="password">
+            <button class="log-in" type="submit">Log in</button>
+            <p class="forgot">Forget your password?</p>
+        </div>
+        <p class="new">New to drive clone?</p>
+        <a href="/register.html"><button class="register" type="button">Create an account</button></a>
+        <p id="loginMessage"></p>
+    </form>
+    
 
- <!-- User Status Indicator -->
- <p id="userStatus">Status: Logged out</p>
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
 
-  <!-- Registration Form -->
-  <h2>Register</h2>
-  <form id="registerForm">
-	<input type="text" id="registerFirstName" placeholder="First Name" required>
-	<input type="text" id="registerLastName" placeholder="Last Name" required>
-	<input type="text" id="registerEmail" placeholder="Email" required>
-	<input type="password" id="registerPassword" placeholder="Password" required>
-	<button type="submit">Register</button>
-  </form>
-  <p id="registerMessage"></p>
-
-  <!-- Login Form -->
-  <h2>Login</h2>
-  <form id="loginForm">
-	<input type="text" id="email" placeholder="Email" required>
-	<input type="password" id="password" placeholder="Password" required>
-	<button type="submit">Login</button>
-  </form>
-  <p id="loginMessage"></p>
-
-  <!-- Upload Form -->
-  <h2>Upload File</h2>
-  <form id="uploadForm">
-	<input type="file" id="fileInput" name="file" required>
-	<button type="submit">Upload</button>
-  </form>
-  <p id="uploadMessage"></p>
-
-  <!-- Download Form -->
-  <h2>Download File</h2>
-  <input type="text" id="downloadFileName" placeholder="Enter file name" required>
-  <button id="downloadButton">Download</button>
-  <p id="downloadMessage"></p>
-
-  <!-- Delete Form -->
-  <h2>Delete File</h2>
-  <input type="text" id="deleteFileName" placeholder="Enter file name" required>
-  <button id="deleteButton">Delete</button>
-  <p id="deleteMessage"></p>
-
-  <!-- User Info Form -->
-  <h2>User Info</h2>
-  <button id="getUserInfoButton">Get User Info</button>
-  <div id="userInfo"></div>
-
-  <script>
-	let token = '';
-
-    // Update user status
-    function updateUserStatus() {
-      const userStatus = document.getElementById('userStatus');
-      if (token) {
-        userStatus.textContent = 'Status: Logged in';
-      } else {
-        userStatus.textContent = 'Status: Logged out';
-      }
-    }
-
-	// Register Form
-	document.getElementById('registerForm').addEventListener('submit', async (event) => {
-      event.preventDefault();
-      const firstName = document.getElementById('registerFirstName').value;
-      const lastName = document.getElementById('registerLastName').value;
-      const email = document.getElementById('registerEmail').value;
-      const password = document.getElementById('registerPassword').value;
-      try {
-        const response = await fetch('/auth/register', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ email, password, firstName, lastName })
-        });
-        const result = await response.json();
-        if (response.ok) {
-          document.getElementById('registerMessage').textContent = 'Registration successful';
-		} else {
-          document.getElementById('registerMessage').textContent = result.message;
+        try {
+            const response = await fetch('/auth/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ email, password })
+            });
+            const result = await response.json();
+            if (response.ok) {
+                token = result.token;
+                document.getElementById('loginMessage').textContent = 'Login successful';
+                sessionStorage.setItem('token', token);
+                sessionStorage.setItem('email', email);
+                sessionStorage.setItem('firstName', result.firstName);
+                sessionStorage.setItem('lastName', result.lastName);
+                
+                window.location = '/user.html';
+            } else {
+                document.getElementById('loginMessage').textContent = result.message;
+            }
+        } catch (error) {
+            document.getElementById('loginMessage').textContent = 'Error logging in';
         }
-      } catch (error) {
-        document.getElementById('registerMessage').textContent = 'Error registering';
-      }
-    });
-
-	// Login Form
-	document.getElementById('loginForm').addEventListener('submit', async (event) => {
-	  event.preventDefault();
-	  const email = document.getElementById('email').value;
-	  const password = document.getElementById('password').value;
-
-	  try {
-		const response = await fetch('/auth/login', {
-		  method: 'POST',
-		  headers: {
-			'Content-Type': 'application/json'
-		  },
-		  body: JSON.stringify({ email, password })
-		});
-		const result = await response.json();
-		if (response.ok) {
-		  token = result.token;
-		  document.getElementById('loginMessage').textContent = 'Login successful';
-		  updateUserStatus();
-		  console.log(result.firstName)
-		} else {
-		  document.getElementById('loginMessage').textContent = result.message;
-		}
-	  } catch (error) {
-		document.getElementById('loginMessage').textContent = 'Error logging in';
-	  }
-	});
-
-	document.getElementById('uploadForm').addEventListener('submit', async (event) => {
-	  event.preventDefault();
-	  const fileInput = document.getElementById('fileInput');
-	  const formData = new FormData();
-	  formData.append('file', fileInput.files[0]);
-
-	  try {
-		const response = await fetch('/files/upload', {
-		  method: 'POST',
-		  headers: {
-			'Authorization': `Bearer ${token}`
-		  },
-		  body: formData
-		});
-		const result = await response.json();
-		document.getElementById('uploadMessage').textContent = result.message;
-	  } catch (error) {
-		document.getElementById('uploadMessage').textContent = 'Error uploading file';
-	  }
-	});
-
-	document.getElementById('downloadButton').addEventListener('click', async () => {
-	  const fileName = document.getElementById('downloadFileName').value;
-	  try {
-		const response = await fetch(`/files/download/${fileName}`, {
-		  headers: {
-			'Authorization': `Bearer ${token}`
-		  }
-		});
-		if (response.ok) {
-		  const blob = await response.blob();
-		  const url = window.URL.createObjectURL(blob);
-		  const a = document.createElement('a');
-		  a.href = url;
-		  a.download = fileName;
-		  document.body.appendChild(a);
-		  a.click();
-		  a.remove();
-		  document.getElementById('downloadMessage').textContent = 'File downloaded successfully';
-		} else {
-		  document.getElementById('downloadMessage').textContent = 'Error downloading file';
-		}
-	  } catch (error) {
-		document.getElementById('downloadMessage').textContent = 'Error downloading file';
-	  }
-	});
-
-	document.getElementById('deleteButton').addEventListener('click', async () => {
-	  const fileName = document.getElementById('deleteFileName').value;
-	  try {
-		const response = await fetch(`/files/delete/${fileName}`, {
-		  method: 'DELETE',
-		  headers: {
-			'Authorization': `Bearer ${token}`
-		  }
-		});
-		const result = await response.json();
-		document.getElementById('deleteMessage').textContent = result.message;
-	  } catch (error) {
-		document.getElementById('deleteMessage').textContent = 'Error deleting file';
-	  }
-	});
-
-	// Get user info
-    document.getElementById('getUserInfoButton').addEventListener('click', async () => {
-      try {
-        const response = await fetch('/users', {
-          method: 'GET',
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
         });
-        const result = await response.json();
-        if (response.ok) {
-          const userInfoDiv = document.getElementById('userInfo');
-          userInfoDiv.innerHTML = `<pre>${JSON.stringify(result, null, 2)}</pre>`;
-        } else {
-          document.getElementById('userInfo').textContent = result.message;
-        }
-      } catch (error) {
-        document.getElementById('userInfo').textContent = 'Error fetching user info';
-      }
-    });
-  </script>
+    </script>
 </body>
 </html>
