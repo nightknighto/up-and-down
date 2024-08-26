@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>drive clone register</title>
+    <title>New to Up & Down</title>
+    <link rel="shortcut icon" type="image/x-icon" href="upanddown-removebg-preview.png" />
     <link rel="stylesheet" href="/styles-register.css">
 </head>
 <body>
@@ -30,7 +31,7 @@
 
                 <div class="mail">
                     <p>Email</p>
-                    <input type="text" id="registerEmail" required>
+                    <input type="email" id="registerEmail" required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$">
                 </div>
 
                 <div class="password">
@@ -46,7 +47,7 @@
                     
                 </div>
 
-                <p>Use 8 or more characters with a mix of letters, numbers & symbols</p>
+                <p id="use8">Use 8 or more characters with a mix of letters, numbers & symbols</p>
 
                 <div class="create">
                     <a href="/login.html"><p class="instead">log in instead</p></a>
@@ -67,24 +68,36 @@
         const lastName = document.getElementById('registerLastName').value;
         const email = document.getElementById('registerEmail').value;
         const password = document.getElementById('registerPassword').value;
+        const confirmPassword = document.getElementById('registerConfirmPassword').value;
 
-        try {
-            const response = await fetch('/auth/register', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ email, password , firstName, lastName })
-            });
-            const result = await response.json();
-            if (response.ok) {
-            document.getElementById('registerMessage').textContent = 'Registration successful';
-            } else {
-            document.getElementById('registerMessage').textContent = result.message;
+        const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+
+        if (!password.match(passwordRegex)) {
+            event.preventDefault(); // Prevent form submission
+            document.getElementById('use8').style.color = "red";
+        } else if (password !== confirmPassword) {
+            event.preventDefault(); // Prevent form submission
+            document.getElementById('registerMessage').textContent = "Passwords do not match!";
+        } else {
+            try {
+                const response = await fetch('/auth/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ email, password , firstName, lastName })
+                });
+                const result = await response.json();
+                if (response.ok) {
+                document.getElementById('registerMessage').textContent = 'Registration successful';
+                } else {
+                document.getElementById('registerMessage').textContent = result.message;
+                }
+            } catch (error) {
+                document.getElementById('registerMessage').textContent = 'Error registering';
             }
-        } catch (error) {
-            document.getElementById('registerMessage').textContent = 'Error registering';
         }
+        
         });
     </script>
 </body>

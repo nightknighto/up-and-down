@@ -24,6 +24,15 @@ body {
 }
 .user-info {
     margin-top: 20px;
+    margin-bottom: 20px;
+    display: grid;
+    justify-content: space-evenly;
+    border-style: dashed;
+    border-width: 1px;
+    border-radius: 20px;
+    border-color: gray;
+    padding-bottom: 20px;
+    padding-top: 10px;
 }
 .user-info p {
     margin-bottom: 10px;
@@ -51,12 +60,39 @@ body {
     margin-top: 10px;
     color: black;
     font-size: 16px;
+    overflow: hidden; 
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.buttons {
+    display: flex;
+}
+
+.log-out {
+    width: 150px;
+    height: 30px;
+    border-radius: 30px;
+    margin-top: 20px;
+    border-style: none;
+    color: white;
+    background-color: lightgray;
+}
+
+.log-out:hover{
+    background-color: gray;
+}
+
+.log-out-div {
+    display: flex;
+    justify-content: center;
 }
 
 .download-button {
     background-image: url(download.png);
     width: 28px;
     height: 28px;
+    margin-right: 5px;
 }
 
 .download-button:hover{
@@ -88,10 +124,12 @@ body {
 .user-file {
     display: flex;
     justify-content: space-between;
+    width: 500px;
 }
 
 .upload-form {
     display: flex;
+    justify-content: space-evenly;
 }
 
 .upload-file{
