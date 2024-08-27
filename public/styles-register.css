@@ -108,6 +108,12 @@ input[type=text]{
     box-sizing: border-box;
 }
 
+
+input[type=email]{
+    padding-left: 12px;
+    box-sizing: border-box;
+}
+
 input[type=password]{
     padding: 12px;
     box-sizing: border-box;
@@ -124,7 +130,7 @@ button{
     margin-top: 20px;
     border-style: none;
     color: white;
-    background-color: lightgray;
+    background-color: gray;
 }
 
 .log-in:hover{
@@ -138,5 +144,5 @@ button{
 }
 
 .register:hover{
-    background-color: gray;
+    background-color: lightgray;
 }
